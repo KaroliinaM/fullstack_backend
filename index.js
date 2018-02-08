@@ -2,11 +2,14 @@ const express=require ('express')
 const app = express()
 const bodyParser=require('body-parser')
 const morgan=require('morgan')
-const mor=new morgan('tiny')
+
+morgan.token('content', function getContent(req) {
+    return JSON.stringify(req.body)
+})
 
 app.use(bodyParser.json())
 
-app.use(mor)
+app.use(morgan(':method :url :content :status :res[content-length] - :response-time ms'))
 const generateId =()=> Math.floor(Math.random()*1000)
 
 let persons=[
