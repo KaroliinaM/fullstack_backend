@@ -1,8 +1,12 @@
 const express=require ('express')
 const app = express()
 const bodyParser=require('body-parser')
+const morgan=require('morgan')
+const mor=new morgan('tiny')
 
 app.use(bodyParser.json())
+
+app.use(mor)
 const generateId =()=> Math.floor(Math.random()*1000)
 
 let persons=[
