@@ -15,14 +15,20 @@ app.use(bodyParser.json())
 
 app.use(morgan(':method :url :content :status :res[content-length] - :response-time ms'))
 const generateId =()=> Math.floor(Math.random()*1000)
+const formatContacts =(person) => {
+  return {
+    name:person.name,
+    number:person.number,
+    date:person.date,
+    id:person._id
 
+  }
+}
 
 app.get('/api/persons',(request, response)=>{
-  Person
-    .find({})
+  Person    .find({})
     .then(persons => {
-      response.json(persons)
-      Person.hello()
+      response.json(persons.map(formatContacts))
     })
 })
 app.get('/info', (request, response) => {
@@ -51,29 +57,22 @@ app.delete('/api/persons/:id', (request, response) => {
 app.post('/api/persons', (request, response) => {
     const body=request.body
 
-    if (body.name===undefined || body.number===undefined) {
+  /**  if (body.name===undefined || body.number===undefined) {
         return response.status(400).json({error: 'content missing'})
     }
     if(persons.map(person=>person.name).includes(body.name)){
         return response.status(400).json({error: 'name must be unique'})
-    }
-
-
-
-
-
-    const contact = {
+    }**/
+    const contact = new Person({
         name: body.name,
         number: body.number,
-        date: new Date(),
-        id: generateId()
-    }
-
-    persons=persons.concat(contact)
-
-
-
-    response.json(contact)
+        date: new Date()
+    })
+    contact
+      .save()
+      .then(savedContact => {
+        response.json(formatContacts(savedContact))
+      })
 })
 
 const PORT = process.env.PORT || 3001
