@@ -3,6 +3,7 @@ const app = express()
 const bodyParser=require('body-parser')
 const morgan=require('morgan')
 const cors=require('cors')
+const Person=require('./models/person')
 
 app.use(express.static('build'))
 app.use(cors())
@@ -15,30 +16,14 @@ app.use(bodyParser.json())
 app.use(morgan(':method :url :content :status :res[content-length] - :response-time ms'))
 const generateId =()=> Math.floor(Math.random()*1000)
 
-let persons=[
-    {
-        "name": "Arto Hellas",
-        "number": "040-123456",
-        "id": 1
-      },
-      {
-        "name": "Martti Tienari",
-        "number": "040-123456",
-        "id": 2
-      },
-      {
-        "name": "Arto Järvinen",
-        "number": "040-123456",
-        "id": 3
-      },
-      {
-        "name": "Lea Kutvonen",
-        "number": "040-123456",
-        "id": 4
-      }
-]
+
 app.get('/api/persons',(request, response)=>{
-    response.json(persons)
+  Person
+    .find({})
+    .then(persons => {
+      response.json(persons)
+      Person.hello()
+    })
 })
 app.get('/info', (request, response) => {
     console.log(new Date())
