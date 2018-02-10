@@ -1,5 +1,5 @@
 const mongoose=require('mongoose')
-const url='mongodb://fullstack:salis1@ds229388.mlab.com:29388/fullstack_phonebook'
+const url='mongodb://fullstack:@ds229388.mlab.com:29388/fullstack_phonebook'
 const Schema=mongoose.Schema
 mongoose.connect(url)
 

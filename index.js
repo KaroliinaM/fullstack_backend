@@ -32,27 +32,40 @@ app.get('/api/persons',(request, response)=>{
     })
 })
 app.get('/info', (request, response) => {
-    console.log(new Date())
-    response.send(`<p>puhelinluettelossa ${persons.length} henkilön tiedot</p><p>${new Date()}</p>`)
+  Person
+    .find({})
+    .then(persons => {
+      response.send(`<p>puhelinluettelossa ${persons.length} henkilön tiedot</p><p>${new Date()}</p>`)
+    })
+    /**console.log(new Date())
+    response.send(`<p>puhelinluettelossa ${persons.length} henkilön tiedot</p><p>${new Date()}</p>`)**/
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id= Number(request.params.id)
-    const person=persons.find(person => person.id===id)
-
-    if(person) {
-        response.json(person)
-    } else {
-        response.status(404).end()
-    }
+    Person
+      .findById(request.params.id)
+      .then(person => {
+        if (person) {
+          response.json(formatContacts(person))
+        } else {
+          response.status(404).end()
+        }
+      })
+      .catch(error => {
+        console.log(error)
+        response.status(400).send({error:'malformatted id'})
+      })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
-    const id =Number(request.params.id)
-    console.log(id)
-    persons=persons.filter(person=> person.id !==id)
-
-    response.status(204).end()
+    Person
+      .findByIdAndRemove(request.params.id)
+      .then(result => {
+        response.status(204).end()
+      })
+      .catch(error => {
+        response.status(400).send({error: 'malformatted id'})
+      })
 })
 app.post('/api/persons', (request, response) => {
     const body=request.body
@@ -73,6 +86,23 @@ app.post('/api/persons', (request, response) => {
       .then(savedContact => {
         response.json(formatContacts(savedContact))
       })
+})
+app.put('/api/persons/:id', (request, response) => {
+  const body=request.body
+
+  const contact= {
+    name: body.name,
+    number: body.number
+  }
+  Person
+    .findByIdAndUpdate(request.params.id, contact, {new: true} )
+    .then(updatedContact => {
+      response.json(formatContacts(updatedContact))
+    })
+    .catch(error => {
+      console.log(error)
+      response.status(400).send({error: 'malformatted id'})
+    })
 })
 
 const PORT = process.env.PORT || 3001
