@@ -1,5 +1,6 @@
 const mongoose=require('mongoose')
-const url='mongodb://fullstack:@ds229388.mlab.com:29388/fullstack_phonebook'
+const url=process.env.MONGODB_URI
+
 const Schema=mongoose.Schema
 mongoose.connect(url)
 

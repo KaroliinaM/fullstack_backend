@@ -24,9 +24,24 @@ const formatContacts =(person) => {
 
   }
 }
+const personExists =(thisName)=> {
+  Person
+    .find({name: thisName})
+    .then(result => {
+      if(result.length!==0){
+        console.log('hei hei')
+        return true
+      }
+      else {
+        console.log('ho')
+        return false
+      }
+    })
+}
 
 app.get('/api/persons',(request, response)=>{
-  Person    .find({})
+  Person
+    .find({})
     .then(persons => {
       response.json(persons.map(formatContacts))
     })
@@ -70,6 +85,17 @@ app.delete('/api/persons/:id', (request, response) => {
 app.post('/api/persons', (request, response) => {
     const body=request.body
 
+    Person
+      .find({name: body.name})
+      .then(result => {
+        if (result.length>0) {
+          console.log('hei')
+          response.status(400).json({error: 'name must be unique'})
+        }else {
+
+
+
+
   /**  if (body.name===undefined || body.number===undefined) {
         return response.status(400).json({error: 'content missing'})
     }
@@ -86,6 +112,9 @@ app.post('/api/persons', (request, response) => {
       .then(savedContact => {
         response.json(formatContacts(savedContact))
       })
+    }
+    })
+
 })
 app.put('/api/persons/:id', (request, response) => {
   const body=request.body
@@ -103,6 +132,7 @@ app.put('/api/persons/:id', (request, response) => {
       console.log(error)
       response.status(400).send({error: 'malformatted id'})
     })
+
 })
 
 const PORT = process.env.PORT || 3001
