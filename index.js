@@ -43,7 +43,7 @@ app.get('/api/persons',(request, response)=>{
   Person
     .find({})
     .then(persons => {
-      response.json(persons.map(formatContacts))
+      response.json(persons.map(Person.format))
     })
 })
 app.get('/info', (request, response) => {
@@ -61,7 +61,7 @@ app.get('/api/persons/:id', (request, response) => {
       .findById(request.params.id)
       .then(person => {
         if (person) {
-          response.json(formatContacts(person))
+          response.json(Person.format(person))
         } else {
           response.status(404).end()
         }
@@ -110,7 +110,7 @@ app.post('/api/persons', (request, response) => {
     contact
       .save()
       .then(savedContact => {
-        response.json(formatContacts(savedContact))
+        response.json(Person.format(savedContact))
       })
     }
     })

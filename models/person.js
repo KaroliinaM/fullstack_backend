@@ -12,6 +12,14 @@ const personSchema=new Schema({name: String,
 number: String,
 date: Date
 })
+personSchema.statics.format=function(person) {
+  return {
+    id:person._id,
+    name:person.name,
+    number:person.number,
+    date:person.date
+  }
+}
 
 const Person=mongoose.model('Person', personSchema)
 
